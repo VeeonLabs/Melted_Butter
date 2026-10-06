@@ -7,6 +7,7 @@ import { SESSION_TTL_SECONDS, passcodeMatches, signOwnerSession } from "@/lib/au
 
 export interface SignInState {
   error: string | null;
+  success?: boolean;
 }
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -30,11 +31,10 @@ export async function signIn(_prev: SignInState, formData: FormData): Promise<Si
     path: "/",
     maxAge: SESSION_TTL_SECONDS,
   });
-  redirect("/admin");
+  return { error: null, success: true };
 }
 
 export async function signOut(): Promise<void> {
   const store = await cookies();
   store.delete(OWNER_COOKIE);
-  redirect("/admin/login");
 }

@@ -1,10 +1,17 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { signIn, type SignInState } from "../actions";
 
 export function LoginForm() {
   const [state, action, pending] = useActionState<SignInState, FormData>(signIn, { error: null });
+  
+  useEffect(() => {
+    if (state.success) {
+      window.location.href = "/admin";
+    }
+  }, [state.success]);
+
   return (
     <form action={action} className="flex flex-col gap-3">
       <label htmlFor="passcode" className="text-sm font-semibold">

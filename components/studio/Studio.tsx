@@ -160,7 +160,10 @@ export default function Studio({ signOutAction }: { signOutAction: () => Promise
               >
                 Open game ↗
               </a>
-              <form action={signOutAction}>
+              <form action={async () => {
+                await signOutAction();
+                window.location.href = "/admin/login";
+              }}>
                 <Button type="submit" variant="ghost">
                   Sign out
                 </Button>
