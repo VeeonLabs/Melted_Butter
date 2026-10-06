@@ -1,0 +1,42 @@
+import { art, defineTheme, glyph } from "../define";
+
+export const roomWithoutWindows = defineTheme({
+  id: "room-without-windows",
+  identity: { name: "Room Without Windows", tagline: "One lamp, four walls", description: "An enclosed interior: a single warm lamp, a painted-on window frame and lots of quiet dark.", mood: "dark", kind: "comic" },
+  colors: {
+    background: "#0f0e0d",
+    backgroundAlt: "#2e2720",
+    surface: "#191714",
+    ink: "#ede6dc",
+    muted: "#aa9f90",
+    accent: "#d9a55b",
+    accentInk: "#14110e",
+    playerOne: "#d9a55b",
+    playerTwo: "#a6bcb0",
+    board: "#262019",
+    cell: "#16130f",
+    line: "#3a3128",
+    highlight: "#d9a55b",
+    winInk: "#14110e",
+  },
+  typography: { display: "editorial", title: "plain", subtitle: "italic" },
+  surfaces: { card: "minimal", button: "underline", texture: "grain", radius: 4 },
+  players: { layout: "stack", card: "minimal" },
+  board: { style: "velvet", frame: "inset", cellRadius: 4, cellBorder: 1 },
+  symbols: { suggested: [glyph("o"), glyph("x")], treatment: "plain" },
+  artwork: {
+    imageBlend: { blend: "luminosity", overlayOpacity: 0.35, frame: "none" },
+    pieces: [
+      art("window", "Window frame", "window", "behind-board", { size: 24, y: -2, tint: "accent", opacity: 0.25, mobile: "keep" }),
+      art("bulb", "Hanging bulb", "bulb", "title-right", { size: 4, x: 0.5, y: -3, tint: "accent", mobile: "keep" }),
+    ],
+  },
+  background: { slot: 38, recipe: "spotlight" },
+  reactions: { style: "cinematic", flourish: "none" },
+  chapters: { style: "curtain" },
+  chat: { bubble: "square", sticker: "none" },
+  motion: { personality: "calm" },
+  sound: { profile: "low" },
+  specialMoments: { narration: "subtitle" },
+  collage: { accents: ["bulb", "window", "tape"] },
+});

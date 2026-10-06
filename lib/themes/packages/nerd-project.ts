@@ -1,0 +1,43 @@
+import { art, defineTheme, glyph } from "../define";
+
+export const nerdProject = defineTheme({
+  id: "nerd-project",
+  identity: { name: "Nerd Project", tagline: "Notes in the margins", description: "A study notebook: graph paper, pen-blue diagrams, sticky notes and a red-pen opponent.", mood: "light", kind: "comic" },
+  colors: {
+    background: "#f4f1e8",
+    backgroundAlt: "#e9e3d0",
+    surface: "#fffdf6",
+    ink: "#1f2a44",
+    muted: "#4f5871",
+    accent: "#2f5fbf",
+    accentInk: "#ffffff",
+    playerOne: "#c43349",
+    playerTwo: "#2f5fbf",
+    board: "#c9d7ee",
+    cell: "#fffdf6",
+    line: "#a9bfe3",
+    highlight: "#fff1a8",
+    winInk: "#1f2a44",
+  },
+  typography: { display: "hand", title: "underline", subtitle: "hand" },
+  surfaces: { card: "note", button: "outline", texture: "grid", radius: 4 },
+  players: { layout: "strip", card: "compact" },
+  board: { style: "notebook", frame: "tape", cellRadius: 2, cellBorder: 1 },
+  symbols: { suggested: [glyph("x"), glyph("o")], treatment: "ink" },
+  artwork: {
+    imageBlend: { blend: "multiply", overlayOpacity: 0, frame: "polaroid" },
+    pieces: [
+      art("diagram", "Diagram doodle", "diagram", "title-right", { size: 7.5, rotate: 6, x: 1.5, y: -1, tint: "p2", opacity: 0.85 }),
+      art("note", "Sticky note", "sticky-note", "board-bottom-left", { size: 6.5, rotate: -8, x: -3, y: 2, tint: "highlight", layer: "front", mobile: "hide" }),
+      art("clip", "Paperclip", "paperclip", "board-top-right", { size: 3, rotate: 20, x: 0.5, y: -1.8, tint: "muted", layer: "front" }),
+    ],
+  },
+  background: { slot: 40, recipe: "flat" },
+  reactions: { style: "note", flourish: "confetti" },
+  chapters: { style: "page" },
+  chat: { bubble: "note", sticker: "tape" },
+  motion: { personality: "snappy" },
+  sound: { profile: "pop" },
+  specialMoments: { narration: "handwritten" },
+  collage: { accents: ["diagram", "sticky-note", "paperclip", "tape"] },
+});

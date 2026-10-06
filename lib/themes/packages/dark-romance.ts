@@ -1,0 +1,42 @@
+import { art, defineTheme, glyph } from "../define";
+
+export const darkRomance = defineTheme({
+  id: "dark-romance",
+  identity: { name: "Dark Romance", tagline: "Candlelight and wine", description: "Charcoal and candlelight with restrained crimson. Results play like a film.", mood: "dark" },
+  colors: {
+    background: "#0c090f",
+    backgroundAlt: "#2c0f1e",
+    surface: "#1a1218",
+    ink: "#f3e9ee",
+    muted: "#bba5b0",
+    accent: "#d4b47c",
+    accentInk: "#160f14",
+    playerOne: "#ff5f7e",
+    playerTwo: "#e9d7b4",
+    board: "#3c2733",
+    cell: "#1f151c",
+    line: "#4a3040",
+    highlight: "#d4b47c",
+    winInk: "#160f14",
+  },
+  typography: { display: "editorial", title: "italic", subtitle: "caps" },
+  surfaces: { card: "velvet", button: "underline", texture: "grain", radius: 14 },
+  players: { layout: "split", card: "minimal" },
+  board: { style: "velvet", frame: "inset", cellRadius: 12, cellBorder: 1 },
+  symbols: { suggested: [glyph("heart"), glyph("rose")], treatment: "emboss" },
+  artwork: {
+    imageBlend: { blend: "luminosity", overlayOpacity: 0.25, frame: "none" },
+    pieces: [
+      art("thorns", "Thorn line", "thorns", "title-right", { size: 12, rotate: -6, x: 1, tint: "p1", opacity: 0.7 }),
+      art("seal", "Wax seal", "wax-seal", "board-bottom-right", { size: 5, rotate: 12, x: 1.5, y: 1.5, tint: "p1", layer: "front" }),
+    ],
+  },
+  background: { slot: 38, recipe: "spotlight" },
+  reactions: { style: "cinematic", flourish: "petals" },
+  chapters: { style: "curtain" },
+  chat: { bubble: "square", sticker: "none" },
+  motion: { personality: "dramatic" },
+  sound: { profile: "low" },
+  specialMoments: { narration: "subtitle" },
+  collage: { mode: "light", accents: ["thorns", "wax-seal", "tape"] },
+});

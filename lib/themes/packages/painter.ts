@@ -1,0 +1,43 @@
+import { art, defineTheme, glyph } from "../define";
+
+export const painter = defineTheme({
+  id: "painter",
+  identity: { name: "Painter of the Night", tagline: "Canvas, brush, a little mess", description: "An artist's studio: canvas texture, confident brush strokes and a palette, board still front and centre.", mood: "light", kind: "comic" },
+  colors: {
+    background: "#f3ede2",
+    backgroundAlt: "#e6d9c3",
+    surface: "#fbf7ef",
+    ink: "#2b2622",
+    muted: "#5f564d",
+    accent: "#b8402a",
+    accentInk: "#ffffff",
+    playerOne: "#2e5aa8",
+    playerTwo: "#b8402a",
+    board: "#e2d6c2",
+    cell: "#fffcf6",
+    line: "#cbbba1",
+    highlight: "#f2d38a",
+    winInk: "#2b2622",
+  },
+  typography: { display: "editorial", title: "brush-underline", subtitle: "hand" },
+  surfaces: { card: "paper", button: "block", texture: "canvas", radius: 8 },
+  players: { layout: "split", card: "polaroid" },
+  board: { style: "canvas", frame: "brush", cellRadius: 6, tilt: 0.8 },
+  symbols: { suggested: [glyph("x"), glyph("o")], treatment: "ink" },
+  artwork: {
+    imageBlend: { blend: "multiply", overlayOpacity: 0.05, frame: "polaroid" },
+    pieces: [
+      art("palette", "Paint palette", "palette", "board-bottom-right", { size: 8, rotate: -14, x: 2.5, y: 2, tint: "muted", layer: "front", mobile: "hide" }),
+      art("dabs", "Paint dabs", "paint-dabs", "title-right", { size: 7, x: 1.5, y: -1, tint: "p1", opacity: 0.85 }),
+      art("stroke", "Brush stroke", "brush-stroke", "page-left", { size: 12, rotate: -8, tint: "p2", opacity: 0.5, mobile: "hide" }),
+    ],
+  },
+  background: { slot: 40, recipe: "flat" },
+  reactions: { style: "poster", flourish: "ink" },
+  chapters: { style: "page" },
+  chat: { bubble: "square", sticker: "polaroid" },
+  motion: { personality: "snappy" },
+  sound: { profile: "pop" },
+  specialMoments: { narration: "handwritten" },
+  collage: { accents: ["paint-dabs", "brush-stroke", "palette", "tape"] },
+});

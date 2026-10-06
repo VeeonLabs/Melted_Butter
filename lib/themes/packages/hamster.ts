@@ -1,0 +1,43 @@
+import { art, defineTheme, glyph } from "../define";
+
+export const hamster = defineTheme({
+  id: "hamster",
+  identity: { name: "Hamster", tagline: "Two very round friends", description: "Cocoa and lamplight, sunflower seeds and two expressive hamsters. Cute, not chaotic.", mood: "dark" },
+  colors: {
+    background: "#24180f",
+    backgroundAlt: "#4a3122",
+    surface: "#33241a",
+    ink: "#fff3e2",
+    muted: "#dcc3a6",
+    accent: "#f3c969",
+    accentInk: "#24180f",
+    playerOne: "#ffaf66",
+    playerTwo: "#f4e4cf",
+    board: "#5b3f2d",
+    cell: "#3a291e",
+    line: "#6b4a35",
+    highlight: "#f3c969",
+    winInk: "#24180f",
+  },
+  typography: { display: "cute", title: "plain", subtitle: "plain" },
+  surfaces: { card: "paper", button: "pill", texture: "linen", radius: 28 },
+  players: { layout: "corners", card: "portrait" },
+  board: { style: "soft", frame: "none", cellRadius: 24 },
+  symbols: { suggested: [glyph("hamster"), glyph("hamster")], treatment: "emboss" },
+  artwork: {
+    imageBlend: { blend: "normal", overlayOpacity: 0.1, frame: "glow" },
+    pieces: [
+      art("peek", "Peeking hamster", "hamster-peek", "board-top-right", { size: 6.5, x: 1, y: -3.6, tint: "p1", layer: "front", mobile: "keep" }),
+      art("seeds", "Sunflower seeds", "seeds", "board-bottom-left", { size: 6, x: -2, y: 1.5, tint: "muted", opacity: 0.8 }),
+    ],
+  },
+  background: { slot: 39, recipe: "spotlight" },
+  effects: { sparkles: true },
+  reactions: { style: "bubble", flourish: "confetti" },
+  chapters: { style: "stamp" },
+  chat: { bubble: "sticker", sticker: "die-cut" },
+  motion: { personality: "bouncy" },
+  sound: { profile: "pop" },
+  specialMoments: { narration: "tag" },
+  collage: { mode: "light", accents: ["seeds", "hearts", "tape"] },
+});

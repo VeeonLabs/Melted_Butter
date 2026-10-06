@@ -1,0 +1,43 @@
+import { art, defineTheme, glyph } from "../define";
+
+export const loveJinx = defineTheme({
+  id: "love-jinx",
+  identity: { name: "Love Jinx", tagline: "The soft side of trouble", description: "Jinx's romantic counterpart: plum dark, blush accents, ribbon and doodled hearts.", mood: "dark", kind: "comic" },
+  colors: {
+    background: "#1c1418",
+    backgroundAlt: "#4a2236",
+    surface: "#241a20",
+    ink: "#fbeff3",
+    muted: "#cfb3be",
+    accent: "#f4a6c0",
+    accentInk: "#1c1418",
+    playerOne: "#f4a6c0",
+    playerTwo: "#c9b6ff",
+    board: "#3a2531",
+    cell: "#21171c",
+    line: "#4e3241",
+    highlight: "#f4a6c0",
+    winInk: "#1c1418",
+  },
+  typography: { display: "editorial", title: "italic", subtitle: "hand" },
+  surfaces: { card: "velvet", button: "pill", texture: "grain", radius: 20 },
+  players: { layout: "stack", card: "polaroid" },
+  board: { style: "panel", frame: "none", cellRadius: 12 },
+  symbols: { suggested: [glyph("heart"), glyph("star")], treatment: "glow" },
+  artwork: {
+    imageBlend: { blend: "soft-light", overlayOpacity: 0.2, frame: "polaroid" },
+    pieces: [
+      art("hearts", "Heart doodles", "hearts", "board-top-left", { size: 7, rotate: -10, x: -3, y: -2, tint: "p1", layer: "front" }),
+      art("ribbon", "Ribbon", "ribbon", "title-right", { size: 8, rotate: 8, x: 1.5, tint: "p2" }),
+      art("panels", "Character panels", "panels", "page-left", { size: 11, rotate: -2, tint: "p1", opacity: 0.8, mobile: "hide" }),
+    ],
+  },
+  background: { slot: 34, recipe: "dusk" },
+  reactions: { style: "bubble", flourish: "hearts" },
+  chapters: { style: "panel" },
+  chat: { bubble: "round", sticker: "polaroid" },
+  motion: { personality: "bouncy" },
+  sound: { profile: "chime" },
+  specialMoments: { narration: "handwritten" },
+  collage: { accents: ["hearts", "ribbon", "sparkles", "tape"] },
+});

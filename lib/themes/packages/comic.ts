@@ -1,0 +1,43 @@
+import { art, defineTheme } from "../define";
+
+export const comic = defineTheme({
+  id: "comic",
+  identity: { name: "Comic", tagline: "Sunday-paper energy", description: "Paper and ink, halftone dots, hard shadows and result panels that go BAM.", mood: "light" },
+  colors: {
+    background: "#f7efda",
+    backgroundAlt: "#f1dfb6",
+    surface: "#fffaf0",
+    ink: "#1b1b1f",
+    muted: "#4f4a56",
+    accent: "#ffcf33",
+    accentInk: "#1b1b1f",
+    playerOne: "#d62839",
+    playerTwo: "#1d5bd6",
+    board: "#1b1b1f",
+    cell: "#fffaf0",
+    line: "#1b1b1f",
+    highlight: "#ffcf33",
+    winInk: "#1b1b1f",
+  },
+  typography: { display: "comic", title: "stamped", subtitle: "tag" },
+  surfaces: { card: "panel", button: "block", texture: "paper", radius: 6 },
+  players: { layout: "corners", card: "compact" },
+  board: { style: "ink", frame: "offset", cellRadius: 4, cellBorder: 3, tilt: -0.6 },
+  artwork: {
+    imageBlend: { blend: "multiply", overlayOpacity: 0, frame: "panel" },
+    pieces: [
+      art("burst", "Action burst", "burst", "title-left", { size: 5.5, rotate: -12, x: 0, y: -1.5, tint: "accent" }),
+      art("lines", "Speed lines", "speed-lines", "behind-board", { size: 34, tint: "ink", opacity: 0.12, mobile: "keep" }),
+      art("tone", "Halftone patch", "screentone", "board-bottom-right", { size: 9, x: 2, y: 2, tint: "p2", opacity: 0.4, mobile: "hide" }),
+    ],
+  },
+  background: { slot: 37, recipe: "radial-top" },
+  effects: { halftone: true },
+  reactions: { style: "panel", flourish: "starburst" },
+  chapters: { style: "panel" },
+  chat: { bubble: "ink", sticker: "die-cut" },
+  motion: { personality: "bouncy" },
+  sound: { profile: "bright" },
+  specialMoments: { narration: "stamp" },
+  collage: { mode: "light", accents: ["burst", "screentone", "tape"] },
+});

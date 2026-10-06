@@ -1,0 +1,42 @@
+import { art, defineTheme, glyph } from "../define";
+
+export const passion = defineTheme({
+  id: "passion",
+  identity: { name: "Passion", tagline: "Bold, red, on purpose", description: "High-contrast editorial. Oversized type, one strong red diagonal, controlled intensity.", mood: "dark", kind: "comic" },
+  colors: {
+    background: "#120607",
+    backgroundAlt: "#4a0b12",
+    surface: "#1e0c0e",
+    ink: "#fff1ee",
+    muted: "#d6a9a3",
+    accent: "#c42a1c",
+    accentInk: "#ffffff",
+    playerOne: "#ff6a4d",
+    playerTwo: "#f7d6c6",
+    board: "#3a1014",
+    cell: "#210b0d",
+    line: "#5e1a20",
+    highlight: "#f7d6c6",
+    winInk: "#120607",
+  },
+  typography: { display: "modern", title: "oversized", subtitle: "caps" },
+  surfaces: { card: "minimal", button: "block", texture: "grain", radius: 0 },
+  players: { layout: "split", card: "tag" },
+  board: { style: "velvet", frame: "offset", cellRadius: 0, cellBorder: 1, tilt: -1 },
+  symbols: { suggested: [glyph("heart"), glyph("x")], treatment: "plain" },
+  artwork: {
+    imageBlend: { blend: "luminosity", overlayOpacity: 0.3, frame: "none" },
+    pieces: [
+      art("slash", "Red stroke", "brush-stroke", "behind-board", { size: 34, rotate: -24, tint: "accent", opacity: 0.6, mobile: "keep" }),
+      art("hearts", "Heart outline", "hearts", "title-right", { size: 7, rotate: 10, x: 1, tint: "p1" }),
+    ],
+  },
+  background: { slot: 38, recipe: "split" },
+  reactions: { style: "cinematic", flourish: "hearts" },
+  chapters: { style: "stamp" },
+  chat: { bubble: "square", sticker: "none" },
+  motion: { personality: "dramatic" },
+  sound: { profile: "low" },
+  specialMoments: { narration: "stamp" },
+  collage: { accents: ["hearts", "thorns", "brush-stroke", "tape"] },
+});

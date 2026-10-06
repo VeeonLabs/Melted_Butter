@@ -1,0 +1,45 @@
+import { art, defineTheme, glyph } from "../define";
+
+/** Flagship: warm pearl and cream, champagne and soft rose, a framed board. */
+export const pearl = defineTheme({
+  id: "pearl",
+  identity: { name: "Pearl", tagline: "Cream, champagne and lustre", description: "The flagship. Warm pearl surfaces, refined serif type and a board framed like a jewellery box.", mood: "light" },
+  colors: {
+    background: "#f6f0e8",
+    backgroundAlt: "#efdcd2",
+    surface: "#fffaf4",
+    ink: "#2d2421",
+    muted: "#6b5b55",
+    accent: "#8a6236",
+    accentInk: "#ffffff",
+    playerOne: "#a8475f",
+    playerTwo: "#4f6880",
+    board: "#eadfd2",
+    cell: "#fffdf9",
+    line: "#dccbbb",
+    highlight: "#f1e2c6",
+    winInk: "#2d2421",
+  },
+  typography: { display: "elegant", title: "ornament", subtitle: "italic" },
+  surfaces: { card: "pearl", button: "pill", texture: "linen", radius: 26 },
+  players: { layout: "flank", card: "portrait" },
+  board: { style: "pearl", frame: "pearl", cellRadius: 999 },
+  symbols: { suggested: [glyph("pearl"), glyph("heart")], treatment: "sheen" },
+  artwork: {
+    imageBlend: { blend: "multiply", overlayOpacity: 0.1, frame: "pearl" },
+    pieces: [
+      art("strand", "Pearl strand", "pearl-strand", "title-right", { size: 11, rotate: -8, x: 1, y: -1, tint: "muted", opacity: 0.85 }),
+      art("cluster", "Pearls & shell", "pearl-cluster", "board-bottom-left", { size: 7, rotate: -10, x: -2, y: 1.5, tint: "accent", layer: "front", mobile: "hide" }),
+      art("rose", "Rose petal", "petals", "page-right", { size: 9, rotate: 12, tint: "p1", opacity: 0.6, mobile: "hide" }),
+    ],
+  },
+  background: { slot: 35, recipe: "radial-top" },
+  effects: { pearls: false, sparkles: true },
+  reactions: { style: "editorial", flourish: "sparkle" },
+  chapters: { style: "title-card" },
+  chat: { bubble: "round", sticker: "circle" },
+  motion: { personality: "calm" },
+  sound: { profile: "chime" },
+  specialMoments: { narration: "subtitle" },
+  collage: { mode: "light", accents: ["pearl-cluster", "petals", "tape"] },
+});

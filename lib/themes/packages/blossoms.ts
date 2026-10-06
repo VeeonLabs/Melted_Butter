@@ -1,0 +1,43 @@
+import { art, defineTheme, glyph } from "../define";
+
+export const blossoms = defineTheme({
+  id: "blossoms",
+  identity: { name: "Blossoms", tagline: "Spring, lightly", description: "An airy botanical page: a blossom branch overhead and petals in the breeze.", mood: "light" },
+  colors: {
+    background: "#fbedf2",
+    backgroundAlt: "#f2d3df",
+    surface: "#fff8fa",
+    ink: "#3b1f33",
+    muted: "#6e4d64",
+    accent: "#a5482f",
+    accentInk: "#ffffff",
+    playerOne: "#c63b72",
+    playerTwo: "#2f7d61",
+    board: "#efcad8",
+    cell: "#fffbfc",
+    line: "#e3b6c6",
+    highlight: "#f7dc8c",
+    winInk: "#3b1f33",
+  },
+  typography: { display: "editorial", title: "italic", subtitle: "plain" },
+  surfaces: { card: "paper", button: "pill", texture: "paper", radius: 22 },
+  players: { layout: "stack", card: "polaroid" },
+  board: { style: "soft", frame: "none", cellRadius: 20 },
+  symbols: { suggested: [glyph("blossom"), glyph("heart")], treatment: "plain" },
+  artwork: {
+    imageBlend: { blend: "multiply", overlayOpacity: 0.08, frame: "polaroid" },
+    pieces: [
+      art("branch", "Blossom branch", "blossom-branch", "title-left", { size: 13, rotate: -4, x: 0, y: -2.5, tint: "p1", opacity: 0.9 }),
+      art("petals", "Petals", "petals", "board-bottom-right", { size: 6, x: 2, y: 1.5, tint: "p1", opacity: 0.7 }),
+    ],
+  },
+  background: { slot: 36, recipe: "vertical" },
+  effects: { petals: "blossom" },
+  reactions: { style: "bubble", flourish: "petals" },
+  chapters: { style: "page" },
+  chat: { bubble: "round", sticker: "polaroid" },
+  motion: { personality: "floaty" },
+  sound: { profile: "chime" },
+  specialMoments: { narration: "handwritten" },
+  collage: { mode: "light", accents: ["blossom-branch", "petals", "tape"] },
+});

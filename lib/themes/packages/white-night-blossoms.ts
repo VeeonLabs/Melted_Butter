@@ -1,0 +1,43 @@
+import { art, defineTheme, glyph } from "../define";
+
+export const whiteNightBlossoms = defineTheme({
+  id: "white-night-blossoms",
+  identity: { name: "Blossoms of the White Night", tagline: "Pale petals under the moon", description: "A pale nocturne: white blossoms against the dark, a moon, quiet cinematic framing.", mood: "dark", kind: "comic" },
+  colors: {
+    background: "#151925",
+    backgroundAlt: "#363d54",
+    surface: "#1f2433",
+    ink: "#f3f1f5",
+    muted: "#b4b3c2",
+    accent: "#ece6f0",
+    accentInk: "#151925",
+    playerOne: "#f6c9d6",
+    playerTwo: "#c9d7f2",
+    board: "#2c3246",
+    cell: "#1b2030",
+    line: "#3a4158",
+    highlight: "#ece6f0",
+    winInk: "#151925",
+  },
+  typography: { display: "elegant", title: "italic", subtitle: "caps" },
+  surfaces: { card: "glass", button: "outline", texture: "grain", radius: 18 },
+  players: { layout: "corners", card: "minimal" },
+  board: { style: "soft", frame: "double", cellRadius: 14, cellBorder: 1 },
+  symbols: { suggested: [glyph("blossom"), glyph("moon")], treatment: "glow" },
+  artwork: {
+    imageBlend: { blend: "screen", overlayOpacity: 0.2, frame: "none" },
+    pieces: [
+      art("branch", "White blossom branch", "blossom-branch", "title-left", { size: 14, rotate: 6, x: 0, y: -2, tint: "ink", opacity: 0.85 }),
+      art("moon", "Moon", "moon", "page-right", { size: 10, tint: "ink", opacity: 0.8, mobile: "hide" }),
+    ],
+  },
+  background: { slot: 36, recipe: "spotlight" },
+  effects: { petals: "white", stars: true },
+  reactions: { style: "cinematic", flourish: "petals" },
+  chapters: { style: "curtain" },
+  chat: { bubble: "glass", sticker: "circle" },
+  motion: { personality: "floaty" },
+  sound: { profile: "chime" },
+  specialMoments: { narration: "subtitle" },
+  collage: { accents: ["blossom-branch", "petals", "moon", "tape"] },
+});

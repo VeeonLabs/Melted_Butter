@@ -1,0 +1,43 @@
+import { art, defineTheme, glyph } from "../define";
+
+export const moonlight = defineTheme({
+  id: "moonlight",
+  identity: { name: "Moonlight", tagline: "Blue hour, silver light", description: "A nocturne: a full moon behind the title and soft silver on everything.", mood: "dark" },
+  colors: {
+    background: "#0b1324",
+    backgroundAlt: "#1f2f52",
+    surface: "#13203a",
+    ink: "#eef3ff",
+    muted: "#aab7d4",
+    accent: "#f3d98f",
+    accentInk: "#101a2e",
+    playerOne: "#f3d98f",
+    playerTwo: "#b9c9ff",
+    board: "#2b3e66",
+    cell: "#15233f",
+    line: "#33497a",
+    highlight: "#f3d98f",
+    winInk: "#101a2e",
+  },
+  typography: { display: "elegant", title: "italic", subtitle: "italic" },
+  surfaces: { card: "glass", button: "outline", texture: "grain", radius: 24 },
+  players: { layout: "stack", card: "portrait" },
+  board: { style: "glass", frame: "double", cellRadius: 20, cellBorder: 1 },
+  symbols: { suggested: [glyph("moon"), glyph("star")], treatment: "glow" },
+  artwork: {
+    imageBlend: { blend: "luminosity", overlayOpacity: 0.3, frame: "glow" },
+    pieces: [
+      art("moon", "Full moon", "moon", "title-right", { size: 9, x: 2, y: -2, tint: "highlight", opacity: 0.95 }),
+      art("sparkle", "Starlight", "sparkles", "board-bottom-left", { size: 6, x: -2, y: 1, tint: "p2", opacity: 0.8 }),
+    ],
+  },
+  background: { slot: 33, recipe: "vertical" },
+  effects: { stars: true },
+  reactions: { style: "cinematic", flourish: "sparkle" },
+  chapters: { style: "curtain" },
+  chat: { bubble: "glass", sticker: "circle" },
+  motion: { personality: "floaty" },
+  sound: { profile: "chime" },
+  specialMoments: { narration: "subtitle" },
+  collage: { mode: "off", accents: ["sparkles"] },
+});

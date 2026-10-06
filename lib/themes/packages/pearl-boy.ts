@@ -1,0 +1,50 @@
+import { art, defineTheme, glyph } from "../define";
+
+/** Comic world. Blush paper, champagne and pearls; owner artwork provides the comic itself. */
+export const pearlBoy = defineTheme({
+  id: "pearl-boy",
+  identity: {
+    name: "Pearl Boy",
+    tagline: "Pearls, blush and champagne",
+    description: "An editorial scrapbook in blush and champagne: polaroids, tape and pearls around a clean page for the board.",
+    mood: "light",
+    kind: "comic",
+  },
+  colors: {
+    background: "#f2e4e2",
+    backgroundAlt: "#e6cccd",
+    surface: "#fffaf6",
+    ink: "#2a1f22",
+    muted: "#6b555a",
+    accent: "#9c3d57",
+    accentInk: "#ffffff",
+    playerOne: "#9c3d57",
+    playerTwo: "#3f5f7a",
+    board: "#ecdcd8",
+    cell: "#fffdfb",
+    line: "#d9c2c0",
+    highlight: "#f2d9c4",
+    winInk: "#2a1f22",
+  },
+  typography: { display: "editorial", title: "italic", subtitle: "hand" },
+  surfaces: { card: "paper", button: "outline", texture: "paper", radius: 6 },
+  players: { layout: "corners", card: "polaroid" },
+  board: { style: "soft", frame: "tape", cellRadius: 10, cellBorder: 1, tilt: -0.4 },
+  symbols: { suggested: [glyph("pearl"), glyph("heart")], treatment: "sheen" },
+  artwork: {
+    imageBlend: { blend: "multiply", overlayOpacity: 0.08, frame: "polaroid" },
+    pieces: [
+      art("pearls", "Pearl cluster", "pearl-cluster", "board-bottom-left", { size: 6, rotate: -8, x: -2, y: 1.5, tint: "accent", layer: "front", mobile: "hide" }),
+      art("petals", "Petals", "petals", "title-right", { size: 6, x: 1, tint: "p1", opacity: 0.8 }),
+    ],
+  },
+  background: { slot: 35, recipe: "vertical" },
+  effects: { sparkles: true },
+  reactions: { style: "bubble", flourish: "petals" },
+  chapters: { style: "page" },
+  chat: { bubble: "sticker", sticker: "polaroid" },
+  motion: { personality: "floaty" },
+  sound: { profile: "chime" },
+  specialMoments: { narration: "handwritten" },
+  collage: { accents: ["petals", "pearl-cluster", "sparkles", "tape"] },
+});

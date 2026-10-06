@@ -1,0 +1,50 @@
+import { art, defineTheme, glyph } from "../define";
+
+/** Comic world. Twilight over a quiet coast: muted blues, apricot dusk, a line-drawn board. */
+export const lowTide = defineTheme({
+  id: "low-tide",
+  identity: {
+    name: "Low Tide in Twilight",
+    tagline: "Dusk on a quiet coast",
+    description: "Muted coastal twilight: an apricot horizon, tide lines and a hand-ruled board on a calm page.",
+    mood: "dark",
+    kind: "comic",
+  },
+  colors: {
+    background: "#0f1a2a",
+    backgroundAlt: "#3b4064",
+    surface: "#16253a",
+    ink: "#eef2f7",
+    muted: "#a9b6c8",
+    accent: "#f2b880",
+    accentInk: "#1a1410",
+    playerOne: "#f2b880",
+    playerTwo: "#7fd1c7",
+    board: "#9fb2c8",
+    cell: "#16253a",
+    line: "#2f4a66",
+    highlight: "#f2b880",
+    winInk: "#1a1410",
+  },
+  typography: { display: "elegant", title: "spaced-caps", subtitle: "italic" },
+  surfaces: { card: "minimal", button: "underline", texture: "grain", radius: 0 },
+  players: { layout: "strip", card: "compact" },
+  board: { style: "lines", frame: "none", cellRadius: 0 },
+  symbols: { suggested: [glyph("o"), glyph("star")], treatment: "glow" },
+  artwork: {
+    imageBlend: { blend: "soft-light", overlayOpacity: 0.3, frame: "none" },
+    pieces: [
+      art("sun", "Horizon sun", "horizon-sun", "behind-board", { size: 24, y: -6, tint: "accent", opacity: 0.45, mobile: "keep" }),
+      art("tide", "Tide lines", "waves", "footer", { size: 20, tint: "p2", opacity: 0.6 }),
+    ],
+  },
+  background: { slot: 35, recipe: "horizon" },
+  effects: { stars: true },
+  reactions: { style: "cinematic", flourish: "bubbles" },
+  chapters: { style: "curtain" },
+  chat: { bubble: "glass", sticker: "circle" },
+  motion: { personality: "floaty" },
+  sound: { profile: "soft" },
+  specialMoments: { narration: "subtitle" },
+  collage: { accents: ["waves", "pebbles", "sparkles", "tape"] },
+});

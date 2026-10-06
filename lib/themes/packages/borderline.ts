@@ -1,0 +1,43 @@
+import { art, defineTheme } from "../define";
+
+export const borderline = defineTheme({
+  id: "borderline",
+  identity: { name: "Borderline", tagline: "A thin line, held", description: "Tense and minimal: paper white, heavy black, one line across the page, deliberate asymmetry.", mood: "light", kind: "comic" },
+  colors: {
+    background: "#ecebe8",
+    backgroundAlt: "#d8d6d1",
+    surface: "#f6f5f3",
+    ink: "#111111",
+    muted: "#4c4c4c",
+    accent: "#111111",
+    accentInk: "#ffffff",
+    playerOne: "#111111",
+    playerTwo: "#b3261e",
+    board: "#111111",
+    cell: "#f6f5f3",
+    line: "#111111",
+    highlight: "#b3261e",
+    winInk: "#ffffff",
+  },
+  typography: { display: "modern", title: "outlined", subtitle: "caps" },
+  surfaces: { card: "minimal", button: "outline", texture: "paper", radius: 0 },
+  players: { layout: "split", card: "minimal" },
+  board: { style: "lines", frame: "none", cellRadius: 0, tilt: -0.4 },
+  symbols: { treatment: "ink" },
+  artwork: {
+    imageBlend: { blend: "multiply", overlayOpacity: 0, frame: "none" },
+    pieces: [
+      art("line", "Border line", "border-line", "footer", { size: 30, rotate: -2, y: 0.5, tint: "p2", opacity: 0.9, mobile: "keep" }),
+      art("number", "Chapter number", "number", "title-left", { size: 5, x: -1, tint: "ink" }),
+      art("torn", "Torn strip", "torn-strip", "page-right", { size: 10, rotate: 3, tint: "line", opacity: 0.85, mobile: "hide" }),
+    ],
+  },
+  background: { slot: 40, recipe: "split" },
+  reactions: { style: "editorial", flourish: "none" },
+  chapters: { style: "stamp" },
+  chat: { bubble: "square", sticker: "none" },
+  motion: { personality: "dramatic" },
+  sound: { profile: "low" },
+  specialMoments: { narration: "tag" },
+  collage: { accents: ["number", "torn-strip", "border-line", "tape"] },
+});

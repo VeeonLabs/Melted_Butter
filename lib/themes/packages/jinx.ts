@@ -1,0 +1,45 @@
+import { art, defineTheme } from "../define";
+
+/** Original dark contemporary-comic look. No third-party characters or panels. */
+export const jinx = defineTheme({
+  id: "jinx",
+  identity: { name: "Jinx", tagline: "Black ink, one red line", description: "Dark contemporary comic: heavy contrast, screentone shadows, dramatic panel zones and a single red accent.", mood: "dark", kind: "comic" },
+  colors: {
+    background: "#0d0d10",
+    backgroundAlt: "#1f1f26",
+    surface: "#16161b",
+    ink: "#f2f2f2",
+    muted: "#a7a7b1",
+    accent: "#cc2936",
+    accentInk: "#ffffff",
+    playerOne: "#ff4d5a",
+    playerTwo: "#f2f2f2",
+    board: "#f2f2f2",
+    cell: "#121216",
+    line: "#f2f2f2",
+    highlight: "#f2f2f2",
+    winInk: "#0d0d10",
+  },
+  typography: { display: "modern", title: "slash", subtitle: "caps" },
+  surfaces: { card: "panel", button: "block", texture: "screentone", radius: 2 },
+  players: { layout: "corners", card: "tag" },
+  board: { style: "panel", frame: "offset", cellRadius: 2, tilt: 0.5 },
+  symbols: { treatment: "ink" },
+  artwork: {
+    imageBlend: { blend: "luminosity", overlayOpacity: 0.2, frame: "ink" },
+    pieces: [
+      art("panels", "Character panels", "panels", "page-right", { size: 12, rotate: 2, tint: "ink", mobile: "hide" }),
+      art("lines", "Speed lines", "speed-lines", "behind-board", { size: 34, tint: "ink", opacity: 0.1, mobile: "keep" }),
+      art("slash", "Red line", "border-line", "footer", { size: 16, rotate: -3, tint: "accent" }),
+    ],
+  },
+  background: { slot: 37, recipe: "split" },
+  effects: { speedLines: false },
+  reactions: { style: "panel", flourish: "ink" },
+  chapters: { style: "panel" },
+  chat: { bubble: "ink", sticker: "die-cut" },
+  motion: { personality: "snappy" },
+  sound: { profile: "low" },
+  specialMoments: { narration: "stamp" },
+  collage: { accents: ["burst", "screentone", "speed-lines", "tape"] },
+});

@@ -1,0 +1,43 @@
+import { art, defineTheme, glyph } from "../define";
+
+export const roses = defineTheme({
+  id: "roses",
+  identity: { name: "Roses", tagline: "Velvet and petals", description: "Deep velvet reds, a single rose in bloom and petals that drift past.", mood: "dark" },
+  colors: {
+    background: "#1a0b12",
+    backgroundAlt: "#3d1426",
+    surface: "#2a1019",
+    ink: "#fde8ee",
+    muted: "#d8aab8",
+    accent: "#f3c969",
+    accentInk: "#2a1019",
+    playerOne: "#ff7a9c",
+    playerTwo: "#ffd1a1",
+    board: "#5a2438",
+    cell: "#2f1420",
+    line: "#6b2c44",
+    highlight: "#f3c969",
+    winInk: "#2a1019",
+  },
+  typography: { display: "elegant", title: "italic", subtitle: "italic" },
+  surfaces: { card: "velvet", button: "pill", texture: "grain", radius: 26 },
+  players: { layout: "flank", card: "portrait" },
+  board: { style: "velvet", frame: "none", cellRadius: 22 },
+  symbols: { suggested: [glyph("rose"), glyph("heart")], treatment: "emboss" },
+  artwork: {
+    imageBlend: { blend: "normal", overlayOpacity: 0.2, frame: "glow" },
+    pieces: [
+      art("bloom", "Rose bloom", "rose", "board-top-left", { size: 9, rotate: -12, x: -3.5, y: -2.5, tint: "p1", layer: "front" }),
+      art("stem", "Rose stem", "rose-stem", "page-right", { size: 9, rotate: 8, tint: "p1", opacity: 0.8, mobile: "hide" }),
+    ],
+  },
+  background: { slot: 34, recipe: "radial-top" },
+  effects: { petals: "rose" },
+  reactions: { style: "bubble", flourish: "petals" },
+  chapters: { style: "title-card" },
+  chat: { bubble: "round", sticker: "circle" },
+  motion: { personality: "calm" },
+  sound: { profile: "soft" },
+  specialMoments: { narration: "banner" },
+  collage: { mode: "light", accents: ["rose", "petals", "tape"] },
+});
