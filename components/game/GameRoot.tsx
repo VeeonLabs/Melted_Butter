@@ -101,6 +101,11 @@ function PlayerGame({ themePick, onThemePick }: { themePick: ThemeId | null; onT
               </button>
             </div>
           )}
+          <div className="absolute top-4 right-4 z-50">
+            <a href="/admin" className="px-4 py-2 bg-gray-800/80 text-gray-200 rounded-lg text-sm font-semibold hover:bg-gray-700/80 backdrop-blur-md border border-gray-600/50 shadow-lg transition-colors cursor-pointer">
+              Admin Studio
+            </a>
+          </div>
           <GameView
             state={state}
             boardKey={boardKey}
