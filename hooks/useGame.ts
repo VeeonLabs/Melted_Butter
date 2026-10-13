@@ -6,6 +6,13 @@ import { createLocalGameStore, type GameStore } from "@/lib/game/storage";
 import type { GameState, PlayerId, GameAction } from "@/lib/game/types";
 import { io, Socket } from "socket.io-client";
 
+export interface ChatMessage {
+  sender: string;
+  message: string;
+  ts: number;
+  own?: boolean;
+}
+
 const defaultStore = createLocalGameStore();
 
 function hydrate(store: GameStore): GameState {
@@ -25,6 +32,7 @@ export function useGame(store: GameStore = defaultStore) {
   const [roomId, setRoomId] = useState<string | null>(null);
   const [playerRole, setPlayerRole] = useState<PlayerId | null>(null);
   const [isCreator, setIsCreator] = useState(false);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -50,6 +58,10 @@ export function useGame(store: GameStore = defaultStore) {
       socket.on("room-terminated", () => {
         alert("The room was terminated by the creator.");
         window.location.href = "/";
+      });
+
+      socket.on("chat-message", (msg: ChatMessage) => {
+        setMessages((prev) => [...prev, { ...msg, own: false }]);
       });
 
       return () => {
@@ -96,6 +108,14 @@ export function useGame(store: GameStore = defaultStore) {
     }
   }, [roomId, isCreator]);
 
+  const sendChat = useCallback((message: string) => {
+    if (!socketRef.current || !roomId || !message.trim()) return;
+    const sender = playerRole ?? "Observer";
+    const payload: ChatMessage = { sender, message: message.trim(), ts: Date.now(), own: true };
+    setMessages((prev) => [...prev, payload]);
+    socketRef.current.emit("chat-message", { roomId, message: message.trim(), sender });
+  }, [roomId, playerRole]);
+
   const play = useCallback((index: number) => {
     dispatchAndSync({ type: "move", index, player: playerRole || undefined });
   }, [dispatchAndSync, playerRole]);
@@ -108,5 +128,5 @@ export function useGame(store: GameStore = defaultStore) {
     dispatchAndSync({ type: "resetScore" });
   }, [dispatchAndSync]);
 
-  return { state, boardKey, play, rematch, resetScore, roomId, playerRole, isCreator, terminateRoom };
+  return { state, boardKey, play, rematch, resetScore, roomId, playerRole, isCreator, terminateRoom, messages, sendChat };
 }

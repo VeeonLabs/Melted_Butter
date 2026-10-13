@@ -3,10 +3,9 @@ import next from "next";
 import { Server } from "socket.io";
 
 const dev = process.env.NODE_ENV !== "production";
-const hostname = "localhost";
 const port = parseInt(process.env.PORT || "3000", 10);
 
-const app = next({ dev, hostname, port });
+const app = next({ dev });
 const handler = app.getRequestHandler();
 
 app.prepare().then(() => {
@@ -61,6 +60,13 @@ app.prepare().then(() => {
       }
     });
 
+    socket.on("chat-message", ({ roomId, message, sender }) => {
+      if (!roomId || !message) return;
+      const payload = { sender, message, ts: Date.now() };
+      // Send to everyone else in the room
+      socket.to(roomId).emit("chat-message", payload);
+    });
+
     socket.on("disconnect", () => {
       console.log("User disconnected:", socket.id);
     });
@@ -72,6 +78,6 @@ app.prepare().then(() => {
       process.exit(1);
     })
     .listen(port, () => {
-      console.log(`> Ready on http://${hostname}:${port}`);
+      console.log(`> Ready on http://localhost:${port}`);
     });
 });
