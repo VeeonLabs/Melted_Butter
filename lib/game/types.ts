@@ -47,6 +47,6 @@ export interface GameState {
  */
 export type GameAction =
   | { type: "move"; index: number; player?: PlayerId }
-  | { type: "rematch" }
-  | { type: "resetScore" }
+  | { type: "rematch"; firstPlayer?: PlayerId }
+  | { type: "resetScore"; firstPlayer?: PlayerId }
   | { type: "syncState"; state: GameState };

@@ -171,6 +171,23 @@ function PlayerGame({ themePick, onThemePick }: { themePick: ThemeId | null; onT
                   <span style={{ fontSize: "0.72rem", color: "var(--mb-muted)", background: "var(--mb-cell)", padding: "0.3rem 0.75rem", borderRadius: "9999px", border: "1px solid var(--mb-line)" }}>
                     {playerRole ? playerRole.replace("_", " ") : "Observer"}
                   </span>
+                  {playerRole && state.status === "playing" && (
+                    <span style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "0.35rem",
+                      fontSize: "0.72rem",
+                      fontWeight: 700,
+                      color: playerRole === state.currentPlayer ? "var(--mb-accent-ink)" : "var(--mb-muted)",
+                      background: playerRole === state.currentPlayer ? "var(--mb-accent)" : "color-mix(in srgb, var(--mb-surface) 80%, transparent)",
+                      padding: "0.3rem 0.75rem",
+                      borderRadius: "9999px",
+                      border: "1px solid var(--mb-line)",
+                      transition: "all 0.2s ease",
+                    }}>
+                      {playerRole === state.currentPlayer ? "🟢 Your turn" : "⏳ Opponent's turn"}
+                    </span>
+                  )}
                   <button
                     onClick={copyLink}
                     style={{ padding: "0.3rem 0.85rem", borderRadius: "9999px", border: "1px solid var(--mb-line)", background: copied ? "var(--mb-accent)" : "var(--mb-surface)", color: copied ? "var(--mb-accent-ink)" : "var(--mb-ink)", fontSize: "0.72rem", fontWeight: 600, cursor: "pointer", transition: "all 0.2s" }}

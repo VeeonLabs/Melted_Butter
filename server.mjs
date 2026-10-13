@@ -38,10 +38,45 @@ app.prepare().then(() => {
       const player = numClients === 1 ? "PLAYER_ONE" : "PLAYER_TWO";
       socket.emit("player-assigned", { role: player, isCreator });
 
-      if (rooms.has(roomId)) {
-        socket.emit("sync-state", rooms.get(roomId));
+      // If room state doesn't exist yet, initialize it with a random first player
+      if (!rooms.has(roomId)) {
+        const randomFirst = Math.random() < 0.5 ? "PLAYER_ONE" : "PLAYER_TWO";
+        rooms.set(roomId, {
+          gameId: `room-${roomId}`,
+          board: Array(9).fill(null),
+          currentPlayer: randomFirst,
+          winner: null,
+          winningCells: null,
+          status: "playing",
+          score: { PLAYER_ONE: 0, PLAYER_TWO: 0, draws: 0 },
+          streak: { player: null, count: 0 },
+          lastMove: null,
+          round: 1,
+          version: 1,
+        });
+      } else if (numClients === 2) {
+        // When the 2nd player connects and game is unplayed, randomly pick who goes first
+        const currentRoom = rooms.get(roomId);
+        if (currentRoom && currentRoom.board.every((cell) => cell === null) && currentRoom.status === "playing") {
+          const randomFirst = Math.random() < 0.5 ? "PLAYER_ONE" : "PLAYER_TWO";
+          currentRoom.currentPlayer = randomFirst;
+          rooms.set(roomId, currentRoom);
+          io.to(roomId).emit("chat-message", {
+            sender: "System",
+            message: `🎲 Coin toss: ${randomFirst === "PLAYER_ONE" ? "Player 1" : "Player 2"} was randomly chosen to go first!`,
+            ts: Date.now(),
+          });
+        }
       }
-      
+
+      // Sync state to the joining socket
+      socket.emit("sync-state", rooms.get(roomId));
+
+      // When second player joins, broadcast to ensure both players have identical starting state
+      if (numClients === 2) {
+        io.to(roomId).emit("sync-state", rooms.get(roomId));
+      }
+
       socket.to(roomId).emit("player-joined", { id: socket.id, player });
     });
 

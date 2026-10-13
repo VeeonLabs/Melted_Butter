@@ -121,12 +121,30 @@ export function useGame(store: GameStore = defaultStore) {
   }, [dispatchAndSync, playerRole]);
 
   const rematch = useCallback(() => {
-    dispatchAndSync({ type: "rematch" });
-  }, [dispatchAndSync]);
+    const randomFirst: PlayerId = Math.random() < 0.5 ? "PLAYER_ONE" : "PLAYER_TWO";
+    dispatchAndSync({ type: "rematch", firstPlayer: randomFirst });
+    if (socketRef.current && roomId) {
+      const firstLabel = randomFirst === "PLAYER_ONE" ? "Player 1" : "Player 2";
+      socketRef.current.emit("chat-message", {
+        roomId,
+        sender: "System",
+        message: `🎲 Rematch! ${firstLabel} was randomly selected to go first.`,
+      });
+    }
+  }, [dispatchAndSync, roomId]);
 
   const resetScore = useCallback(() => {
-    dispatchAndSync({ type: "resetScore" });
-  }, [dispatchAndSync]);
+    const randomFirst: PlayerId = Math.random() < 0.5 ? "PLAYER_ONE" : "PLAYER_TWO";
+    dispatchAndSync({ type: "resetScore", firstPlayer: randomFirst });
+    if (socketRef.current && roomId) {
+      const firstLabel = randomFirst === "PLAYER_ONE" ? "Player 1" : "Player 2";
+      socketRef.current.emit("chat-message", {
+        roomId,
+        sender: "System",
+        message: `🎲 Score reset! ${firstLabel} was randomly selected to go first.`,
+      });
+    }
+  }, [dispatchAndSync, roomId]);
 
   return { state, boardKey, play, rematch, resetScore, roomId, playerRole, isCreator, terminateRoom, messages, sendChat };
 }

@@ -118,12 +118,12 @@ export function applyMove(state: GameState, index: number, player?: PlayerId): G
   return { ...state, board, currentPlayer: otherPlayer(state.currentPlayer), lastMove: index, version };
 }
 
-/** New round, same score. Player one always opens. */
-export function startRematch(state: GameState): GameState {
+/** New round, same score. Player one opens by default, or optionally a specified player. */
+export function startRematch(state: GameState, firstPlayer?: PlayerId): GameState {
   return {
     ...state,
     board: createEmptyBoard(),
-    currentPlayer: FIRST_PLAYER,
+    currentPlayer: firstPlayer ?? FIRST_PLAYER,
     winner: null,
     winningCells: null,
     status: "playing",
@@ -134,9 +134,9 @@ export function startRematch(state: GameState): GameState {
 }
 
 /** Clears score and streak and starts a fresh first round. Keeps the game id. */
-export function resetScore(state: GameState): GameState {
+export function resetScore(state: GameState, firstPlayer?: PlayerId): GameState {
   return {
-    ...startRematch(state),
+    ...startRematch(state, firstPlayer),
     score: { PLAYER_ONE: 0, PLAYER_TWO: 0, draws: 0 },
     streak: { player: null, count: 0 },
     round: 1,
@@ -148,9 +148,9 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case "move":
       return applyMove(state, action.index, action.player);
     case "rematch":
-      return startRematch(state);
+      return startRematch(state, action.firstPlayer);
     case "resetScore":
-      return resetScore(state);
+      return resetScore(state, action.firstPlayer);
     case "syncState":
       // Always trust the synchronized state for now.
       return action.state;
