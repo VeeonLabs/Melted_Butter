@@ -10,96 +10,129 @@ const handler = app.getRequestHandler();
 
 app.prepare().then(() => {
   const httpServer = createServer(handler);
-  const io = new Server(httpServer);
+  const io = new Server(httpServer, {
+    cors: {
+      origin: "*",
+      methods: ["GET", "POST"],
+    },
+    transports: ["polling", "websocket"],
+  });
 
-  // Store game states by roomId
+  // Store room objects: roomId -> { creatorId: string, players: { PLAYER_ONE: string | null, PLAYER_TWO: string | null }, state: object }
   const rooms = new Map();
-  const roomCreators = new Map();
 
   io.on("connection", (socket) => {
     console.log("A user connected:", socket.id);
 
-    socket.on("join-room", (roomId) => {
-      socket.join(roomId);
-      console.log(`Socket ${socket.id} joined room ${roomId}`);
-      
-      const clients = io.sockets.adapter.rooms.get(roomId);
-      const numClients = clients ? clients.size : 0;
-      
-      let isCreator = false;
-      if (numClients === 1) {
-        roomCreators.set(roomId, socket.id);
-        isCreator = true;
-      } else if (roomCreators.get(roomId) === socket.id) {
-        isCreator = true;
-      }
-      
-      // The first person is PLAYER_ONE, second is PLAYER_TWO
-      const player = numClients === 1 ? "PLAYER_ONE" : "PLAYER_TWO";
-      socket.emit("player-assigned", { role: player, isCreator });
+    socket.on("join-room", (data) => {
+      const rawRoomId = typeof data === "object" && data !== null ? data.roomId : data;
+      const roomId = typeof rawRoomId === "string" ? rawRoomId.trim() : String(rawRoomId || "");
+      const playerId = typeof data === "object" && data !== null && data.playerId ? String(data.playerId) : socket.id;
 
-      // If room state doesn't exist yet, initialize it with a random first player
-      if (!rooms.has(roomId)) {
+      if (!roomId) return;
+      socket.join(roomId);
+      console.log(`Socket ${socket.id} (player ${playerId}) joined room ${roomId}`);
+
+      let room = rooms.get(roomId);
+
+      if (!room) {
+        // First player creates the room
         const randomFirst = Math.random() < 0.5 ? "PLAYER_ONE" : "PLAYER_TWO";
-        rooms.set(roomId, {
-          gameId: `room-${roomId}`,
-          board: Array(9).fill(null),
-          currentPlayer: randomFirst,
-          winner: null,
-          winningCells: null,
-          status: "playing",
-          score: { PLAYER_ONE: 0, PLAYER_TWO: 0, draws: 0 },
-          streak: { player: null, count: 0 },
-          lastMove: null,
-          round: 1,
-          version: 1,
-        });
-      } else if (numClients === 2) {
-        // When the 2nd player connects and game is unplayed, randomly pick who goes first
-        const currentRoom = rooms.get(roomId);
-        if (currentRoom && currentRoom.board.every((cell) => cell === null) && currentRoom.status === "playing") {
+        room = {
+          creatorId: playerId,
+          players: {
+            PLAYER_ONE: playerId,
+            PLAYER_TWO: null,
+          },
+          state: {
+            gameId: `room-${roomId}`,
+            board: Array(9).fill(null),
+            currentPlayer: randomFirst,
+            winner: null,
+            winningCells: null,
+            status: "playing",
+            score: { PLAYER_ONE: 0, PLAYER_TWO: 0, draws: 0 },
+            streak: { player: null, count: 0 },
+            lastMove: null,
+            round: 1,
+            version: 1,
+          },
+        };
+        rooms.set(roomId, room);
+      }
+
+      // Assign role based on persistent playerId
+      let role = null;
+      let isCreator = room.creatorId === playerId;
+
+      if (room.players.PLAYER_ONE === playerId) {
+        role = "PLAYER_ONE";
+      } else if (room.players.PLAYER_TWO === playerId) {
+        role = "PLAYER_TWO";
+      } else if (!room.players.PLAYER_TWO) {
+        // Second player claims PLAYER_TWO
+        room.players.PLAYER_TWO = playerId;
+        role = "PLAYER_TWO";
+
+        // When second player connects and game has not started, do a fair coin toss
+        if (room.state.board.every((cell) => cell === null) && room.state.status === "playing") {
           const randomFirst = Math.random() < 0.5 ? "PLAYER_ONE" : "PLAYER_TWO";
-          currentRoom.currentPlayer = randomFirst;
-          rooms.set(roomId, currentRoom);
+          room.state.currentPlayer = randomFirst;
           io.to(roomId).emit("chat-message", {
             sender: "System",
             message: `🎲 Coin toss: ${randomFirst === "PLAYER_ONE" ? "Player 1" : "Player 2"} was randomly chosen to go first!`,
             ts: Date.now(),
           });
         }
+      } else {
+        // Room already has two players: this socket is a spectator/observer
+        role = null;
       }
 
-      // Sync state to the joining socket
-      socket.emit("sync-state", rooms.get(roomId));
+      socket.emit("player-assigned", { role, isCreator });
 
-      // When second player joins, broadcast to ensure both players have identical starting state
-      if (numClients === 2) {
-        io.to(roomId).emit("sync-state", rooms.get(roomId));
+      // Always send the latest synced state
+      socket.emit("sync-state", room.state);
+
+      // If both players are present, broadcast state so both sides start with identical board
+      if (room.players.PLAYER_ONE && room.players.PLAYER_TWO) {
+        io.to(roomId).emit("sync-state", room.state);
       }
 
-      socket.to(roomId).emit("player-joined", { id: socket.id, player });
+      socket.to(roomId).emit("player-joined", { id: socket.id, player: role });
     });
 
     socket.on("sync-state", ({ roomId, state }) => {
-      rooms.set(roomId, state);
-      // broadcast to everyone else in the room
-      socket.to(roomId).emit("sync-state", state);
+      const cleanRoomId = typeof roomId === "string" ? roomId.trim() : roomId;
+      if (!cleanRoomId || !state) return;
+
+      const room = rooms.get(cleanRoomId);
+      if (room) {
+        room.state = state;
+      }
+
+      // Broadcast move / new state to everyone else in the room
+      socket.to(cleanRoomId).emit("sync-state", state);
     });
 
-    socket.on("terminate-room", (roomId) => {
-      if (roomCreators.get(roomId) === socket.id) {
-        rooms.delete(roomId);
-        roomCreators.delete(roomId);
-        socket.to(roomId).emit("room-terminated");
-        io.socketsLeave(roomId);
+    socket.on("terminate-room", (data) => {
+      const rawRoomId = typeof data === "object" && data !== null ? data.roomId : data;
+      const cleanRoomId = typeof rawRoomId === "string" ? rawRoomId.trim() : rawRoomId;
+      const playerId = typeof data === "object" && data !== null && data.playerId ? String(data.playerId) : socket.id;
+
+      const room = rooms.get(cleanRoomId);
+      if (room && (room.creatorId === playerId || room.creatorId === socket.id)) {
+        rooms.delete(cleanRoomId);
+        socket.to(cleanRoomId).emit("room-terminated");
+        io.socketsLeave(cleanRoomId);
       }
     });
 
     socket.on("chat-message", ({ roomId, message, sender }) => {
-      if (!roomId || !message) return;
+      const cleanRoomId = typeof roomId === "string" ? roomId.trim() : roomId;
+      if (!cleanRoomId || !message) return;
       const payload = { sender, message, ts: Date.now() };
-      // Send to everyone else in the room
-      socket.to(roomId).emit("chat-message", payload);
+      socket.to(cleanRoomId).emit("chat-message", payload);
     });
 
     socket.on("disconnect", () => {

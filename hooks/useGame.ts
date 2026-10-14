@@ -19,6 +19,20 @@ function hydrate(store: GameStore): GameState {
   return store.load() ?? createInitialState();
 }
 
+function getSessionPlayerId(): string {
+  if (typeof window === "undefined") return "server";
+  try {
+    let id = window.sessionStorage.getItem("mb:player-id");
+    if (!id) {
+      id = "p_" + Math.random().toString(36).substring(2, 10);
+      window.sessionStorage.setItem("mb:player-id", id);
+    }
+    return id;
+  } catch {
+    return "p_" + Math.random().toString(36).substring(2, 10);
+  }
+}
+
 /**
  * The only place UI meets game state. Phase 2 can replace `store` with a
  * Supabase-backed one and dispatch remote actions into the same reducer.
@@ -36,17 +50,24 @@ export function useGame(store: GameStore = defaultStore) {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const room = params.get("room");
+    const room = params.get("room")?.trim();
     if (room) {
       setRoomId(room);
-      const socket = io();
+      const socket = io({
+        transports: ["polling", "websocket"],
+        reconnection: true,
+        reconnectionAttempts: 10,
+        reconnectionDelay: 1000,
+      });
       socketRef.current = socket;
 
+      const playerId = getSessionPlayerId();
+
       socket.on("connect", () => {
-        socket.emit("join-room", room);
+        socket.emit("join-room", { roomId: room, playerId });
       });
 
-      socket.on("player-assigned", ({ role, isCreator }) => {
+      socket.on("player-assigned", ({ role, isCreator }: { role: PlayerId | null; isCreator: boolean }) => {
         setPlayerRole(role);
         setIsCreator(isCreator);
       });
@@ -103,7 +124,8 @@ export function useGame(store: GameStore = defaultStore) {
 
   const terminateRoom = useCallback(() => {
     if (socketRef.current && roomId && isCreator) {
-      socketRef.current.emit("terminate-room", roomId);
+      const playerId = getSessionPlayerId();
+      socketRef.current.emit("terminate-room", { roomId, playerId });
       window.location.href = "/";
     }
   }, [roomId, isCreator]);
@@ -117,8 +139,12 @@ export function useGame(store: GameStore = defaultStore) {
   }, [roomId, playerRole]);
 
   const play = useCallback((index: number) => {
+    if (playerRole && playerRole !== state.currentPlayer) {
+      console.warn(`[Multiplayer] Move ignored: You are ${playerRole}, but it's ${state.currentPlayer}'s turn.`);
+      return;
+    }
     dispatchAndSync({ type: "move", index, player: playerRole || undefined });
-  }, [dispatchAndSync, playerRole]);
+  }, [dispatchAndSync, playerRole, state.currentPlayer]);
 
   const rematch = useCallback(() => {
     const randomFirst: PlayerId = Math.random() < 0.5 ? "PLAYER_ONE" : "PLAYER_TWO";
