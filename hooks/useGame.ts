@@ -119,6 +119,25 @@ export function useGame(store: GameStore = defaultStore) {
 
     if (socketRef.current && roomId) {
       socketRef.current.emit("sync-state", { roomId, state: newState });
+
+      if (newState.status === "won" && state.status !== "won") {
+        const winnerRoleLabel = newState.winner === "PLAYER_ONE" ? "Player 1" : "Player 2";
+        const text = `🏆 ${winnerRoleLabel} won the round!`;
+        setMessages((prev) => [...prev, { sender: "System", message: text, ts: Date.now(), own: false }]);
+        socketRef.current.emit("chat-message", {
+          roomId,
+          sender: "System",
+          message: text,
+        });
+      } else if (newState.status === "draw" && state.status !== "draw") {
+        const text = `🤝 Round ${newState.round} ended in a draw!`;
+        setMessages((prev) => [...prev, { sender: "System", message: text, ts: Date.now(), own: false }]);
+        socketRef.current.emit("chat-message", {
+          roomId,
+          sender: "System",
+          message: text,
+        });
+      }
     }
   }, [state, playerRole, roomId]);
 
@@ -151,10 +170,12 @@ export function useGame(store: GameStore = defaultStore) {
     dispatchAndSync({ type: "rematch", firstPlayer: randomFirst });
     if (socketRef.current && roomId) {
       const firstLabel = randomFirst === "PLAYER_ONE" ? "Player 1" : "Player 2";
+      const text = `🎲 Rematch! ${firstLabel} was randomly selected to go first.`;
+      setMessages((prev) => [...prev, { sender: "System", message: text, ts: Date.now(), own: false }]);
       socketRef.current.emit("chat-message", {
         roomId,
         sender: "System",
-        message: `🎲 Rematch! ${firstLabel} was randomly selected to go first.`,
+        message: text,
       });
     }
   }, [dispatchAndSync, roomId]);
@@ -164,10 +185,12 @@ export function useGame(store: GameStore = defaultStore) {
     dispatchAndSync({ type: "resetScore", firstPlayer: randomFirst });
     if (socketRef.current && roomId) {
       const firstLabel = randomFirst === "PLAYER_ONE" ? "Player 1" : "Player 2";
+      const text = `🎲 Score reset! ${firstLabel} was randomly selected to go first.`;
+      setMessages((prev) => [...prev, { sender: "System", message: text, ts: Date.now(), own: false }]);
       socketRef.current.emit("chat-message", {
         roomId,
         sender: "System",
-        message: `🎲 Score reset! ${firstLabel} was randomly selected to go first.`,
+        message: text,
       });
     }
   }, [dispatchAndSync, roomId]);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { BlendedImage } from "@/components/media/BlendedImage";
 import { AssetProvider, useAssets } from "@/components/providers/AssetProvider";
 import { ConfigProvider, useGameConfig } from "@/components/providers/ConfigProvider";
@@ -98,8 +98,100 @@ function MultiplayerToggle({ mode, onChange }: { mode: "create" | "join"; onChan
 
 function PlayerGame({ themePick, onThemePick }: { themePick: ThemeId | null; onThemePick: (id: ThemeId | null) => void }) {
   const { ready } = useAssets();
-  const { isSlotFilled } = useGameConfig();
+  const { config, isSlotFilled } = useGameConfig();
   const { state, boardKey, play, rematch, resetScore, roomId, playerRole, isCreator, terminateRoom, messages, sendChat } = useGame();
+
+  // In multiplayer rooms, adapt player names and win text to the local player's perspective
+  const perspectiveConfig = useMemo(() => {
+    if (!roomId) return config;
+
+    if (playerRole === "PLAYER_TWO") {
+      return {
+        ...config,
+        players: {
+          PLAYER_ONE: {
+            ...config.players.PLAYER_ONE,
+            name: "Opponent",
+            turnText: "Opponent's turn",
+            winText: "Opponent won! 💔",
+          },
+          PLAYER_TWO: {
+            ...config.players.PLAYER_TWO,
+            name: "You",
+            turnText: "Your turn",
+            winText: "You won! 🎉",
+          },
+        },
+        reactions: {
+          ...config.reactions,
+          captions: {
+            win: ["Absolute domination! 👑", "Too easy, honestly! 💅", "Taking a victory lap! 🏃", "Victory! 🏆"],
+            loss: ["Demands a rematch! 🫠", "Next round is mine! 😤", "Claims they let you win. 🙃", "Well played! 🤝"],
+            draw: ["Nobody wins. A legendary stalemate! 🤝", "Evenly matched! 🧠"],
+          },
+          moments: {
+            ...config.reactions.moments,
+            winningStreak: "{winner} is on a {streak}-win streak! 🔥",
+            losingStreak: "{loser} has lost {streak} in a row. Time for a comeback! 💪",
+            specialCelebration: "{winner} reached {wins} wins! 🎉",
+          },
+        },
+      };
+    }
+
+    if (playerRole === "PLAYER_ONE") {
+      return {
+        ...config,
+        players: {
+          PLAYER_ONE: {
+            ...config.players.PLAYER_ONE,
+            name: "You",
+            turnText: "Your turn",
+            winText: "You won! 🎉",
+          },
+          PLAYER_TWO: {
+            ...config.players.PLAYER_TWO,
+            name: "Opponent",
+            turnText: "Opponent's turn",
+            winText: "Opponent won! 💔",
+          },
+        },
+        reactions: {
+          ...config.reactions,
+          captions: {
+            win: ["Absolute domination! 👑", "Too easy, honestly! 💅", "Taking a victory lap! 🏃", "Victory! 🏆"],
+            loss: ["Demands a rematch! 🫠", "Next round is mine! 😤", "Claims they let you win. 🙃", "Well played! 🤝"],
+            draw: ["Nobody wins. A legendary stalemate! 🤝", "Evenly matched! 🧠"],
+          },
+          moments: {
+            ...config.reactions.moments,
+            winningStreak: "{winner} is on a {streak}-win streak! 🔥",
+            losingStreak: "{loser} has lost {streak} in a row. Time for a comeback! 💪",
+            specialCelebration: "{winner} reached {wins} wins! 🎉",
+          },
+        },
+      };
+    }
+
+    // Observer / Spectator in a room
+    return {
+      ...config,
+      players: {
+        PLAYER_ONE: {
+          ...config.players.PLAYER_ONE,
+          name: "Player 1",
+          turnText: "Player 1's turn",
+          winText: "Player 1 won! 🎉",
+        },
+        PLAYER_TWO: {
+          ...config.players.PLAYER_TWO,
+          name: "Player 2",
+          turnText: "Player 2's turn",
+          winText: "Player 2 won! 🎉",
+        },
+      },
+    };
+  }, [config, roomId, playerRole]);
 
   const [minElapsed, setMinElapsed] = useState(false);
   useEffect(() => {
@@ -168,8 +260,8 @@ function PlayerGame({ themePick, onThemePick }: { themePick: ThemeId | null; onT
                     <span style={{ width: "0.45rem", height: "0.45rem", borderRadius: "9999px", background: "var(--mb-accent)", display: "inline-block" }} />
                     Live · Room {roomId}
                   </span>
-                  <span style={{ fontSize: "0.72rem", color: "var(--mb-muted)", background: "var(--mb-cell)", padding: "0.3rem 0.75rem", borderRadius: "9999px", border: "1px solid var(--mb-line)" }}>
-                    {playerRole ? playerRole.replace("_", " ") : "Observer"}
+                  <span style={{ fontSize: "0.72rem", color: "var(--mb-muted)", background: "var(--mb-cell)", padding: "0.3rem 0.75rem", borderRadius: "9999px", border: "1px solid var(--mb-line)", fontWeight: 600 }}>
+                    {playerRole === "PLAYER_ONE" ? "You: Player 1 (X)" : playerRole === "PLAYER_TWO" ? "You: Player 2 (O)" : "Observer"}
                   </span>
                   {playerRole && state.status === "playing" && (
                     <span style={{
@@ -186,6 +278,39 @@ function PlayerGame({ themePick, onThemePick }: { themePick: ThemeId | null; onT
                       transition: "all 0.2s ease",
                     }}>
                       {playerRole === state.currentPlayer ? "🟢 Your turn" : "⏳ Opponent's turn"}
+                    </span>
+                  )}
+                  {playerRole && state.status === "won" && (
+                    <span style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "0.35rem",
+                      fontSize: "0.72rem",
+                      fontWeight: 700,
+                      color: playerRole === state.winner ? "var(--mb-accent-ink)" : "var(--mb-muted)",
+                      background: playerRole === state.winner ? "var(--mb-accent)" : "color-mix(in srgb, var(--mb-surface) 80%, transparent)",
+                      padding: "0.3rem 0.75rem",
+                      borderRadius: "9999px",
+                      border: "1px solid var(--mb-line)",
+                      transition: "all 0.2s ease",
+                    }}>
+                      {playerRole === state.winner ? "🏆 You won!" : "💔 Opponent won"}
+                    </span>
+                  )}
+                  {state.status === "draw" && (
+                    <span style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "0.35rem",
+                      fontSize: "0.72rem",
+                      fontWeight: 700,
+                      color: "var(--mb-muted)",
+                      background: "var(--mb-cell)",
+                      padding: "0.3rem 0.75rem",
+                      borderRadius: "9999px",
+                      border: "1px solid var(--mb-line)",
+                    }}>
+                      🤝 It&apos;s a draw
                     </span>
                   )}
                   <button
@@ -265,14 +390,16 @@ function PlayerGame({ themePick, onThemePick }: { themePick: ThemeId | null; onT
           >
             {/* Game board */}
             <div style={{ flex: "1 1 24rem", minWidth: "18rem", maxWidth: "32rem" }}>
-              <GameView
-                state={state}
-                boardKey={boardKey}
-                onPlay={play}
-                onRematch={rematch}
-                onResetScore={resetScore}
-                themePicker={<ThemePicker current={themePick} onPick={onThemePick} />}
-              />
+              <ConfigProvider config={perspectiveConfig} themeId={effectiveThemeId(perspectiveConfig, themePick)}>
+                <GameView
+                  state={state}
+                  boardKey={boardKey}
+                  onPlay={play}
+                  onRematch={rematch}
+                  onResetScore={resetScore}
+                  themePicker={<ThemePicker current={themePick} onPick={onThemePick} />}
+                />
+              </ConfigProvider>
             </div>
 
             {/* Chat panel — parallel with game board when in a room */}
@@ -335,7 +462,7 @@ function PlayerGame({ themePick, onThemePick }: { themePick: ThemeId | null; onT
                       }}
                     >
                       <span style={{ fontSize: "0.62rem", color: "var(--mb-muted)", marginBottom: "0.15rem", padding: "0 0.25rem" }}>
-                        {msg.own ? "You" : msg.sender.replace("_", " ")}
+                        {msg.own ? "You" : msg.sender === "System" ? "System" : msg.sender === playerRole ? "You" : msg.sender.startsWith("PLAYER_") ? (playerRole ? "Opponent" : msg.sender.replace("_", " ")) : msg.sender}
                       </span>
                       <div
                         style={{
