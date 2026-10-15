@@ -453,7 +453,7 @@ function PlayerGame({ themePick, onThemePick }: { themePick: ThemeId | null; onT
                   )}
                   {messages.map((msg, i) => (
                     <div
-                      key={i}
+                      key={msg.id || i}
                       style={{
                         display: "flex",
                         flexDirection: "column",
@@ -474,10 +474,13 @@ function PlayerGame({ themePick, onThemePick }: { themePick: ThemeId | null; onT
                           lineHeight: 1.35,
                           maxWidth: "85%",
                           wordBreak: "break-word",
-                          background: msg.own ? "var(--mb-accent)" : "var(--mb-cell)",
-                          color: msg.own ? "var(--mb-accent-ink)" : "var(--mb-ink)",
+                          background: msg.sender === "System"
+                            ? "color-mix(in srgb, var(--mb-cell) 70%, transparent)"
+                            : msg.own ? "var(--mb-accent)" : "var(--mb-cell)",
+                          color: msg.sender === "System" ? "var(--mb-muted)" : msg.own ? "var(--mb-accent-ink)" : "var(--mb-ink)",
                           border: msg.own ? "none" : "1px solid var(--mb-line)",
                           boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                          fontStyle: msg.sender === "System" ? "italic" : "normal",
                         }}
                       >
                         {msg.message}

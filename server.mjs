@@ -102,9 +102,16 @@ app.prepare().then(() => {
       socket.to(roomId).emit("player-joined", { id: socket.id, player: role });
     });
 
-    socket.on("sync-state", ({ roomId, state }) => {
-      const cleanRoomId = typeof roomId === "string" ? roomId.trim() : roomId;
+    socket.on("sync-state", (data) => {
+      const rawRoomId = typeof data === "object" && data !== null ? data.roomId : undefined;
+      const cleanRoomId = typeof rawRoomId === "string" ? rawRoomId.trim() : rawRoomId;
+      const state = typeof data === "object" && data !== null ? data.state : undefined;
+
       if (!cleanRoomId || !state) return;
+
+      if (!socket.rooms.has(cleanRoomId)) {
+        socket.join(cleanRoomId);
+      }
 
       const room = rooms.get(cleanRoomId);
       if (room) {
@@ -128,11 +135,23 @@ app.prepare().then(() => {
       }
     });
 
-    socket.on("chat-message", ({ roomId, message, sender }) => {
-      const cleanRoomId = typeof roomId === "string" ? roomId.trim() : roomId;
+    socket.on("chat-message", (data) => {
+      const rawRoomId = typeof data === "object" && data !== null ? data.roomId : undefined;
+      const cleanRoomId = typeof rawRoomId === "string" ? rawRoomId.trim() : rawRoomId;
+      const message = typeof data === "object" && data !== null ? data.message : undefined;
+      const sender = typeof data === "object" && data !== null ? data.sender : "Observer";
+      const playerId = typeof data === "object" && data !== null ? data.playerId : socket.id;
+      const id = typeof data === "object" && data !== null && data.id ? data.id : "msg_" + Math.random().toString(36).substring(2, 9);
+
       if (!cleanRoomId || !message) return;
-      const payload = { sender, message, ts: Date.now() };
-      socket.to(cleanRoomId).emit("chat-message", payload);
+
+      if (!socket.rooms.has(cleanRoomId)) {
+        socket.join(cleanRoomId);
+      }
+
+      const payload = { id, sender, message, playerId, ts: Date.now() };
+      console.log(`[Chat] Room ${cleanRoomId} from ${sender} (${playerId}): ${message}`);
+      io.to(cleanRoomId).emit("chat-message", payload);
     });
 
     socket.on("disconnect", () => {
